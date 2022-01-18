@@ -1,1 +1,8 @@
 .DS_Store
+**/mlruns/*
+**/wandb/*
+**/download_data/*
+**/process_data/*
+**/outputs/*
+**/artifacts/*
+.idea/
