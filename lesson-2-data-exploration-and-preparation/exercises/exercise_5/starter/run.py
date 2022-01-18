@@ -11,10 +11,28 @@ logger = logging.getLogger()
 
 def go(args):
 
-    run = wandb.init(project="exercise_5", job_type="process_data")
+    with wandb.init(project="exercise_5",  job_type="use_file") as run:
+        ## YOUR CODE HERE
+        artifact = run.use_artifact(args.input_artifact)
+        df = pd.read_parquet(artifact.file())
 
-    ## YOUR CODE HERE
-    pass
+    df = df.drop_duplicates().reset_index(drop=True)
+    # %%
+    df['title'].fillna(value='', inplace=True)
+    df['song_name'].fillna(value='', inplace=True)
+    df['text_feature'] = df['title'] + ' ' + df['song_name']
+    filename = args.artifact_name
+    df.to_csv(filename)
+
+    with wandb.init(project="exercise_5", job_type="upload_file") as run:
+        artifact = wandb.Artifact(
+            name=filename,
+            type=args.artifact_type,
+            description=args.artifact_description,
+            metadata={"key_1": "value_1"}
+        )
+        artifact.add_file(filename)
+        run.log_artifact(artifact)
 
 
 if __name__ == "__main__":
