@@ -32,6 +32,16 @@ def go(config: DictConfig):
     # NOTE: use os.path.join(root_path, "process_data") to get the path
     # to the "process_data" component
     ##################
+    _ = mlflow.run(
+        os.path.join(root_path, "process_data"),
+        "main",  # entry point on the MLproject file
+        parameters={
+            "input_artifact": "iris.csv:latest",  # must specify a version
+            "artifact_name": "cleaned_data",
+            "artifact_type": "process_data",
+            "artifact_description": "Processes the iris data with TSNE"
+        },
+    )
 
 
 
